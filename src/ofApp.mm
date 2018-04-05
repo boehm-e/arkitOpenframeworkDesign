@@ -50,13 +50,21 @@ void ofApp::draw() {
         
         ofPushMatrix();
         ofMultMatrix(obj.modelMatrix);
-        
+
         ofSetColor(255);
-//        ofRotate(90,0,0,1);
+        ofRotate(90,0,0,1);
+
+        ofTexture texture = processor->getCameraTexture();
+        texture.draw(-(0.25 / 2),-(0.44 / 2),0.25,0.44);
+//        ofPixels pixels;
+//        texture.readToPixels(pixels);
+//        ofImage image;
+//        image.setFromPixels(pixels);
+////        img.resize(ofGetWidth(), ofGetHeight());
+//
+//        image.draw(-(0.25 / 2),-(0.44 / 2),0.25,0.44);
         
-//        img.draw(-(0.25 / 2),-(0.25 / 2),0.25,0.25);
-        ofRectangle(0,0,ofGetWidth(),ofGetHeight());
-        
+
         ofPopMatrix();
         
         camera.end();
@@ -78,8 +86,12 @@ void ofApp::exit() {
 
 //--------------------------------------------------------------
 void ofApp::touchDown(ofTouchEventArgs &touch){
-    
-    processor->addAnchor(ofVec3f(touch.x,touch.y,-0.2));
+    img.grabScreen(0,0,ofGetWidth(), ofGetHeight());
+    ofLogToConsole();
+    ofLogNotice() << "screenHeight : " << ofGetScreenHeight() << "|| height : " << ofGetHeight();
+    ofLogNotice() << "screenWidth : " << ofGetScreenWidth() << "|| width : " << ofGetWidth();
+//    processor->addAnchor(ofVec3f(touch.x,touch.y,-0.2));
+    processor->addAnchor(ofVec3f(ofGetWidth()/2,ofGetHeight()/2, -0.2));
 }
 
 //--------------------------------------------------------------
