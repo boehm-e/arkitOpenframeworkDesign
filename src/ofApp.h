@@ -35,9 +35,8 @@ public:
     ARSession * session;
     ARRef processor;
     
-    ofImage img;
-    ofRectangle rect;
-    
+    vector <ofImage> frames;
+    int i;
 };
 
 

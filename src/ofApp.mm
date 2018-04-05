@@ -17,13 +17,13 @@ ofApp :: ~ofApp () {
 //--------------------------------------------------------------
 void ofApp::setup() {
     ofBackground(127);
-    
-    img.load("seedup.png");
+    ofLogToConsole();
+
+//    img.load("seedup.png");
     
     int fontSize = 8;
     if (ofxiOSGetOFWindow()->isRetinaSupportedOnDevice())
         fontSize *= 2;
-    
     font.load("fonts/mono0755.ttf", fontSize);
     
     processor = ARProcessor::create(session);
@@ -42,9 +42,8 @@ void ofApp::draw() {
     ofDisableDepthTest();
     processor->draw();
     ofEnableDepthTest();
-    
+    i = 0;
     processor->anchorController->loopAnchors([=](ARObject obj)->void {
-       
         camera.begin();
         processor->setARCameraMatrices();
         
@@ -52,17 +51,13 @@ void ofApp::draw() {
         ofMultMatrix(obj.modelMatrix);
 
         ofSetColor(255);
-        ofRotate(90,0,0,1);
+        ofRotate(-90,0,0,1);
 
-        ofTexture texture = processor->getCameraTexture();
-        texture.draw(-(0.25 / 2),-(0.44 / 2),0.25,0.44);
-//        ofPixels pixels;
-//        texture.readToPixels(pixels);
-//        ofImage image;
-//        image.setFromPixels(pixels);
-////        img.resize(ofGetWidth(), ofGetHeight());
-//
-//        image.draw(-(0.25 / 2),-(0.44 / 2),0.25,0.44);
+        if(frames[i].getWidth() > 1) {
+            frames[i].draw(-(0.25 / 2),-(0.44 / 2),0.25,0.44);
+            i+=1;
+        }
+        
         
 
         ofPopMatrix();
@@ -86,12 +81,21 @@ void ofApp::exit() {
 
 //--------------------------------------------------------------
 void ofApp::touchDown(ofTouchEventArgs &touch){
-    img.grabScreen(0,0,ofGetWidth(), ofGetHeight());
-    ofLogToConsole();
-    ofLogNotice() << "screenHeight : " << ofGetScreenHeight() << "|| height : " << ofGetHeight();
-    ofLogNotice() << "screenWidth : " << ofGetScreenWidth() << "|| width : " << ofGetWidth();
-//    processor->addAnchor(ofVec3f(touch.x,touch.y,-0.2));
-    processor->addAnchor(ofVec3f(ofGetWidth()/2,ofGetHeight()/2, -0.2));
+//    ofLogNotice() << "screenHeight : " << ofGetScreenHeight() << "|| height : " << ofGetHeight();
+//    ofLogNotice() << "screenWidth : " << ofGetScreenWidth() << "|| width : " << ofGetWidth();
+
+    //-- on click : grab image and add it to image array
+    ofTexture texture = processor->getCameraTexture();
+    ofFbo fbo = processor->getFBO();
+    ofPixels pixels;
+    fbo.readToPixels(pixels);
+    ofImage img;
+    pixels.resize(pixels.getWidth()/4, pixels.getHeight()/4);
+    pixels.mirror(false, true);
+    img.setFromPixels(pixels);
+    frames.push_back(img);
+//    processor->addAnchor(ofVec3f(ofGetWidth()/2,ofGetHeight()/2, -0.2));
+    processor->addAnchor();
 }
 
 //--------------------------------------------------------------
