@@ -53,7 +53,15 @@ void ofApp::draw() {
         ofSetColor(255);
         ofRotate(-90,0,0,1);
 
+        if (i%3 == 1) {
+            ofSetColor(255, 0, 0, 150);
+        } else if (i%2==0) {
+            ofSetColor(0, 255, 0, 150);
+        } else {
+            ofSetColor(0, 0, 255, 150);
+        }
         if(frames[i].getWidth() > 1) {
+//            ofRectangle(0,0,200,200);
             frames[i].draw(-(0.25 / 2),-(0.44 / 2),0.25,0.44);
             i+=1;
         }
