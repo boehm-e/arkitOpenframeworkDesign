@@ -1,3 +1,2 @@
 # RESULT
-![result]
-(result.jpg)
+![result](./result.jpg)
