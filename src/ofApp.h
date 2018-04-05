@@ -25,6 +25,7 @@ public:
     void gotFocus();
     void gotMemoryWarning();
     void deviceOrientationChanged(int newOrientation);
+    ofImage getFrameFromCamera(ARRef processor);
 
     
     ofTrueTypeFont font;
@@ -36,7 +37,11 @@ public:
     ARRef processor;
     
     vector <ofImage> frames;
+    bool isDown = false;
+    vector<vector<ofImage>> videos;
     int i;
+    int video_current_index = 0;
+    int video_current_frame = 0;
 };
 
 

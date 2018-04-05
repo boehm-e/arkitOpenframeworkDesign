@@ -18,6 +18,7 @@ ofApp :: ~ofApp () {
 void ofApp::setup() {
     ofBackground(127);
     ofLogToConsole();
+    ofSetFrameRate(60);
 
 //    img.load("seedup.png");
     
@@ -43,21 +44,30 @@ void ofApp::draw() {
     processor->draw();
     ofEnableDepthTest();
     i = 0;
+
+//    ofImage img = getFrameFromCamera(processor);
+    if (isDown) {
+        //            ofImage img = getFrameFromCamera(processor);
+        //            videos[video_current_index][video_current_frame] = img;
+        //            video_current_frame += 1;
+    } else {
+        
+    }
+
     processor->anchorController->loopAnchors([=](ARObject obj)->void {
         camera.begin();
         processor->setARCameraMatrices();
-        
         ofPushMatrix();
         ofMultMatrix(obj.modelMatrix);
-
         ofSetColor(255);
         ofRotate(-90,0,0,1);
+        
+        processor->getCameraTexture().draw(-(0.25 / 2),-(0.44 / 2),0.25,0.44);
 
         if(frames[i].getWidth() > 1) {
             frames[i].draw(-(0.25 / 2),-(0.44 / 2),0.25,0.44);
-            i+=1;
+            i = i+1;
         }
-        
         
 
         ofPopMatrix();
@@ -79,12 +89,7 @@ void ofApp::exit() {
     //
 }
 
-//--------------------------------------------------------------
-void ofApp::touchDown(ofTouchEventArgs &touch){
-//    ofLogNotice() << "screenHeight : " << ofGetScreenHeight() << "|| height : " << ofGetHeight();
-//    ofLogNotice() << "screenWidth : " << ofGetScreenWidth() << "|| width : " << ofGetWidth();
-
-    //-- on click : grab image and add it to image array
+ofImage ofApp::getFrameFromCamera(ARRef processor) {
     ofTexture texture = processor->getCameraTexture();
     ofFbo fbo = processor->getFBO();
     ofPixels pixels;
@@ -93,8 +98,14 @@ void ofApp::touchDown(ofTouchEventArgs &touch){
     pixels.resize(pixels.getWidth()/4, pixels.getHeight()/4);
     pixels.mirror(false, true);
     img.setFromPixels(pixels);
+    return img;
+}
+
+//--------------------------------------------------------------
+void ofApp::touchDown(ofTouchEventArgs &touch){
+    isDown = true;
+    ofImage img = getFrameFromCamera(processor);
     frames.push_back(img);
-//    processor->addAnchor(ofVec3f(ofGetWidth()/2,ofGetHeight()/2, -0.2));
     processor->addAnchor();
 }
 
@@ -105,7 +116,9 @@ void ofApp::touchMoved(ofTouchEventArgs &touch){
 
 //--------------------------------------------------------------
 void ofApp::touchUp(ofTouchEventArgs &touch){
-    
+    isDown = false;
+    video_current_index+=1;
+    video_current_frame = 0;
 }
 
 //--------------------------------------------------------------
