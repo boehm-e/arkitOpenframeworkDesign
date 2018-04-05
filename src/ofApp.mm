@@ -49,15 +49,15 @@ void ofApp::draw() {
         
         ofPushMatrix();
         ofMultMatrix(obj.modelMatrix);
-
-        ofSetColor(255);
         ofRotate(-90,0,0,1);
 
+        ofSetColor(255, 0, 0);
         if(frames[i].getWidth() > 1) {
             frames[i].draw(-(0.25 / 2),-(0.44 / 2),0.25,0.44);
             i+=1;
         }
-        
+        ofSetColor(255);
+
         
 
         ofPopMatrix();
@@ -81,9 +81,6 @@ void ofApp::exit() {
 
 //--------------------------------------------------------------
 void ofApp::touchDown(ofTouchEventArgs &touch){
-//    ofLogNotice() << "screenHeight : " << ofGetScreenHeight() << "|| height : " << ofGetHeight();
-//    ofLogNotice() << "screenWidth : " << ofGetScreenWidth() << "|| width : " << ofGetWidth();
-
     //-- on click : grab image and add it to image array
     ofTexture texture = processor->getCameraTexture();
     ofFbo fbo = processor->getFBO();
@@ -93,6 +90,10 @@ void ofApp::touchDown(ofTouchEventArgs &touch){
     pixels.resize(pixels.getWidth()/4, pixels.getHeight()/4);
     pixels.mirror(false, true);
     img.setFromPixels(pixels);
+
+
+
+
     frames.push_back(img);
 //    processor->addAnchor(ofVec3f(ofGetWidth()/2,ofGetHeight()/2, -0.2));
     processor->addAnchor();
